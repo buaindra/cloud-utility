@@ -83,6 +83,3 @@ class Google_Storage_Utility(object):
     bucket = client.get_bucket('bucket-id')
     blob = bucket.get_blob('remote/path/to/file.txt')
     return blob.download_as_bytes()
-
-  def test(self):
-    return self.project_id
