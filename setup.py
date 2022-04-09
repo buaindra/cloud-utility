@@ -11,13 +11,17 @@ setuptools.setup(
     long_description=long_description,      # Long description read from the the readme file
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),    # List of all python modules to be installed
+    url="https://github.com/buaindra/cloud-utility",
+    project_urls={
+        "Bug Tracker": "https://github.com/buaindra/cloud-utility/issues",
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],                                      # Information to filter the project on PyPi website
-    python_requires='>=3.7',                # Minimum version requirement of the package
-    py_modules=["google_storage_utility"],           # Name of the python package
+    python_requires='>=3.6',                # Minimum version requirement of the package
+    py_modules=["cloud_utility"],           # Name of the python package
     package_dir={'': 'cloud_utility/src'},     # Directory of the source code of the package
     install_requires=["google-cloud-storage", "oauth2client"]                     # Install other dependencies if any
 )

@@ -1,7 +1,7 @@
 from google.cloud import storage
 from google.oauth2 import service_account
-from oauth2client.client import GoogleCredentials
-# import google.auth
+# from oauth2client.client import GoogleCredentials
+import google.auth
 import logging
 
 class Google_Storage_Utility(object):
@@ -16,23 +16,39 @@ class Google_Storage_Utility(object):
 
   def __init__(self, project_id, credential_path=None):
     """
+    project_id = google cloud project id
     credential_path = '/path/to/key.json'
     """
     self.project_id = project_id
     # json_acct_info = json.loads(function_to_get_json_creds())
     # credentials = service_account.Credentials.from_service_account_info(json_acct_info)
-
     if credential_path is not None:
       credentials = service_account.Credentials.from_service_account_file(credential_path)
       scoped_credentials = credentials.with_scopes(['https://www.googleapis.com/auth/cloud-platform'])
     else:
-      # credentials, project = google.auth.default(scopes=['https://www.googleapis.com/auth/cloud-platform'])
-      credentials = GoogleCredentials.get_application_default()
+      credentials, project = google.auth.default(scopes=['https://www.googleapis.com/auth/cloud-platform'])
+      # credentials = GoogleCredentials.get_application_default()
 
+    # credentials = service_account.Credentials.from_service_account_file(credential_path)
     self.storage_client = storage.Client(project=project_id, credentials=credentials)
 
-  def gcp_create_bucket(self, bucket_nm):
-    new_bucket = self.storage_client.create_bucket(bucket_nm)
+  # def gcp_create_bucket(self, bucket_nm):
+  #   new_bucket = self.storage_client.create_bucket(bucket_nm)
+  #   return new_bucket.name
+
+  def gcp_create_bucket(self, bucket_nm, **kwargs):
+    '''
+    bucket_nm: <bucket_name>
+    storage_class: "COLDLINE"/"STANDARD"
+    location: "us"/"us-central1"
+    '''
+    bucket = self.storage_client.bucket(bucket_nm)
+    for key, value in kwargs.items():
+      if key == "storage_class":
+        bucket.storage_class = value
+      elif key == "location":
+        bucket.location = value
+    new_bucket = self.storage_client.create_bucket(bucket)
     return new_bucket.name
 
   def gcp_list_buckets(self):
@@ -41,36 +57,6 @@ class Google_Storage_Utility(object):
     for bucket in buckets:
       bucket_list.append(bucket.name)
     return bucket_list
-
-  def gcp_blob_list(self, bucket_nm, prefix):
-    bucket = self.storage_client.get_bucket(bucket_nm)
-    iterator = bucket.list_blobs(delimiter='/', prefix=prefix)
-    response = iterator._get_next_page_response() 
-    print(iterator)
-    print(response)
-    '''
-    list(iterator) # Need for iteration
-    for prefix in iterator.prefixes:
-      out = f"gs://{bucket_nm}/{prefix}"
-    '''
-    prefix_list = {}
-    level = 0
-    list1 = []
-    for prefix in response.get('prefixes', ""):
-      list1.append(f"gs://{bucket_nm}/{prefix}")
-    prefix_list[level] = list1
-    return prefix_list
-
-  def list_gcs_directories(self, bucket, prefix):
-    # from https://github.com/GoogleCloudPlatform/google-cloud-python/issues/920
-    iterator = self.storage_client.list_blobs(bucket, prefix=prefix, delimiter='/')
-    prefixes = {}
-    for page in iterator.pages:
-        print(page)
-        for prefix in page.prefixes: 
-          print(prefix)
-          print(dir(page))   
-    return prefixes
 
   def gcp_blob_all_list(self, bucket_nm):
     bucket = storage.Bucket(self.storage_client, bucket_nm, user_project=self.project_id)
@@ -95,9 +81,37 @@ class Google_Storage_Utility(object):
     out = new_blob.upload_from_filename(filename=filepath) # '/local/path.txt'
     return out
 
-  '''
-  def retrieve_blob(self, bucket_nm, blob_nm):
-    bucket = client.get_bucket('bucket-id')
-    blob = bucket.get_blob('remote/path/to/file.txt')
-    return blob.download_as_bytes()
-  '''
+  # def list_gcs_directories(self, bucket, prefix):
+  #   # from https://github.com/GoogleCloudPlatform/google-cloud-python/issues/920
+  #   iterator = self.storage_client.list_blobs(bucket, prefix=prefix, delimiter='/')
+  #   prefixes = {}
+  #   for page in iterator.pages:
+  #       print(page)
+  #       for prefix in page.prefixes:
+  #         print(prefix)
+  #         print(dir(page))
+  #   return prefixes
+
+  # def retrieve_blob(self, bucket_nm, blob_nm):
+  #   bucket = client.get_bucket('bucket-id')
+  #   blob = bucket.get_blob('remote/path/to/file.txt')
+  #   return blob.download_as_bytes()
+  #
+  # def gcp_blob_list(self, bucket_nm, prefix):
+  #   bucket = self.storage_client.get_bucket(bucket_nm)
+  #   iterator = bucket.list_blobs(delimiter='/', prefix=prefix)
+  #   response = iterator._get_next_page_response()
+  #   #print(iterator) #<google.api_core.page_iterator.HTTPIterator object at 0x7fb7646efaf0>
+  #   #print(response) #{'kind': 'storage#objects', 'prefixes': ['test3/']}
+  #
+  #   # list(iterator) # Need for iteration
+  #   # for prefix in iterator.prefixes:
+  #   #   out = f"gs://{bucket_nm}/{prefix}"
+  #
+  #   prefix_list = {}
+  #   level = 0
+  #   list1 = []
+  #   for prefix in response.get('prefixes', ""):
+  #     list1.append(f"gs://{bucket_nm}/{prefix}")
+  #   prefix_list[level] = list1
+  #   return prefix_list

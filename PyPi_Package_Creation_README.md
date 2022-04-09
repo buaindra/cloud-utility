@@ -1,6 +1,7 @@
 ## How to create package and deploy to PyPi
 
 #### Ref: https://towardsdatascience.com/how-to-publish-a-python-package-to-pypi-7be9dd5d6dcd
+#### Ref: https://packaging.python.org/en/latest/tutorials/packaging-projects/
 
 1. create virtual-env: 
 	```bash
@@ -41,6 +42,7 @@
 9. copy the package to testpypi:
 	```bash
 	python -m twine upload --repository testpypi dist/*
+ 	python -m twine upload --skip-existing --repository testpypi dist/*
 	```
 10. install from testpypi locally: 
 	```bash
@@ -51,3 +53,8 @@
 	```bash
 	python -m twine upload dist/*
 	```
+12. from next release, copy the package to pypi:
+	```bash
+ 	python -m twine upload dist/* --verbose
+	python -m twine upload --skip-existing dist/*
+ 	```
