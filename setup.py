@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="cloud_utility",                   # This is the name of the package
-    version="0.0.1",                        # The initial release version
+    version="0.0.2",                        # The initial release version
     author="Indranil Pal",                  # Full name of the author
     description="Package for any cloud apis",
     long_description=long_description,      # Long description read from the the readme file
@@ -17,7 +17,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],                                      # Information to filter the project on PyPi website
     python_requires='>=3.7',                # Minimum version requirement of the package
-    py_modules=["google_storage_utility"],  # Name of the python package
-    package_dir={'':'cloud_utility/src'},     # Directory of the source code of the package
-    install_requires=["google-cloud-storage"]                     # Install other dependencies if any
+    py_modules=["google_storage_utility"],           # Name of the python package
+    package_dir={'': 'cloud_utility/src'},     # Directory of the source code of the package
+    install_requires=["google-cloud-storage", "oauth2client"]                     # Install other dependencies if any
 )

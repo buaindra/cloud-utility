@@ -1,4 +1,7 @@
 from google.cloud import storage
+from google.oauth2 import service_account
+from oauth2client.client import GoogleCredentials
+# import google.auth
 import logging
 
 class Google_Storage_Utility(object):
@@ -11,9 +14,22 @@ class Google_Storage_Utility(object):
   gcp_blob_list(project_id, bucket_nm, prefix):
   """
 
-  def __init__(self, project_id):
+  def __init__(self, project_id, credential_path=None):
+    """
+    credential_path = '/path/to/key.json'
+    """
     self.project_id = project_id
-    self.storage_client = storage.Client(project=project_id)
+    # json_acct_info = json.loads(function_to_get_json_creds())
+    # credentials = service_account.Credentials.from_service_account_info(json_acct_info)
+
+    if credential_path is not None:
+      credentials = service_account.Credentials.from_service_account_file(credential_path)
+      scoped_credentials = credentials.with_scopes(['https://www.googleapis.com/auth/cloud-platform'])
+    else:
+      # credentials, project = google.auth.default(scopes=['https://www.googleapis.com/auth/cloud-platform'])
+      credentials = GoogleCredentials.get_application_default()
+
+    self.storage_client = storage.Client(project=project_id, credentials=credentials)
 
   def gcp_create_bucket(self, bucket_nm):
     new_bucket = self.storage_client.create_bucket(bucket_nm)
@@ -79,10 +95,9 @@ class Google_Storage_Utility(object):
     out = new_blob.upload_from_filename(filename=filepath) # '/local/path.txt'
     return out
 
+  '''
   def retrieve_blob(self, bucket_nm, blob_nm):
     bucket = client.get_bucket('bucket-id')
     blob = bucket.get_blob('remote/path/to/file.txt')
     return blob.download_as_bytes()
-
-  def test(self):
-    return self.project_id
+  '''

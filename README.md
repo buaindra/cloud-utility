@@ -14,7 +14,7 @@ pip install cloud_utility
 1. Please make sure you have setup environment variable "GOOGLE_APPLICATION_CREDENTIALS" with the google service account json key inside your code
 	```python
 	import os
-	os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "path_to_your_.json_credential_file"
+	os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/path/to/key.json"
 	```
 	
 	```python

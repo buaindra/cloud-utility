@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.py
 cloud_utility/src/cloud_utility.egg-info/PKG-INFO
