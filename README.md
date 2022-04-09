@@ -95,7 +95,7 @@ pip install cloud_utility
 	print(f"buckets: {out}")
 
 	# get list of prefix with levels and blobs
-	out = storage_obj.gcp_blob_all_list("coherent-coder-346704")
+	out = storage_obj.gcp_blob_all_list("<bucket name>")
 	print(f"prefix: {out[0]}")
 	print(f"blobs: {out[1]}")
 	print(f"total blobs count: {len(out[1])}")
