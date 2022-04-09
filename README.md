@@ -23,13 +23,13 @@ pip install cloud_utility
 	# Grab the application's default credentials from the environment.
     credentials = GoogleCredentials.get_application_default()
 	```
-	or
+	or, 
 	explicitly set-up the environment variable:
 		```bash
 		export GOOGLE_APPLICATION_CREDENTIALS=key.json
 		```
 	
-#### How to use?
+### How to use?
 ```python
 from google_storage_utility import Google_Storage_Utility as gsu
 a = gsu("<google-project-id>")
